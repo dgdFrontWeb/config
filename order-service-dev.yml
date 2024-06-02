@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: order-service
+
+server:
+  port: 8201
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka1:2001/eureka,http://eureka2:2002/eureka
+
+
+# 开启feign
+feign:
+  hystrix:
+    enabled: true
+
+# 配置暴漏点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+# ribbon配置, 负载均衡/请求重试
+ribbon:
+  ConnectTimeout: 1000
+  ReadTimeout: 1000
+
+#针对某台服务配置.
+item-service:
+  ribbon:
+    MaxAutoRetries: 1
+    MaxAutoRetriesNextServer: 2
+    ConnectTimeout: 1000
+    ReadTimeout: 500
+
+# 断路器 降级/熔断 的配置. 前提是开启feign.
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 500
